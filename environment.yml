@@ -2,10 +2,13 @@ name: scion-environment
 channels:
   - conda-forge
 dependencies:
-  - matplotlib
+  - python
   - numpy
-  - pandas
-  - seaborn
-  - scikit-learn
-  - bmdcluster
   - rdkit
+  - pip
+  - pip:
+    - bmdcluster
+    - matplotlib
+    - pandas
+    - seaborn
+    - scikit-learn
