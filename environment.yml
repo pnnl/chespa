@@ -13,3 +13,4 @@ dependencies:
     - seaborn
     - scikit-learn
     - molmass
+    - xlrd
