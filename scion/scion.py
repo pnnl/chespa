@@ -30,8 +30,8 @@ NSTD = 1.95996 # nstd = X standard deviations, 1.95996 = 95% CI
 
 #%% Analysis functions
 
-def normalize(data, avgs_path='../data/pca/avgs.npy',
-              stds_path='../data/pca/stds.npy'):
+def normalize(data, avgs_path='data/pca/avgs.npy',
+              stds_path='data/pca/stds.npy'):
     '''
     Normalize data to have an average of 0 and standard deviation of 1,
     given averages and standard deviations from an existing space.
@@ -42,10 +42,10 @@ def normalize(data, avgs_path='../data/pca/avgs.npy',
         Matrix with data to normalize
     avg_path: string (optional)
         Path to .npy file with N average values to use
-        Default = '../data/pca/avgs.npy'
+        Default = 'data/pca/avgs.npy'
     stds: Numpy array or list (N elements) (optional)
         Path to .npy file with N standard deviation values to use.
-        Default = '../data/pca/stds.npy'
+        Default = 'data/pca/stds.npy'
 
     Returns
     ----------
@@ -66,7 +66,7 @@ def normalize(data, avgs_path='../data/pca/avgs.npy',
     return data
 
 
-def get_pca(data, coeff_path='../data/pca/coeff.npy'):
+def get_pca(data, coeff_path='data/pca/coeff.npy'):
     '''
     Get PCA transform using coefficients from existing space.
 
@@ -76,7 +76,7 @@ def get_pca(data, coeff_path='../data/pca/coeff.npy'):
         Matrix with data to transform
     coeff_path: string (optional)
         Path to .npy file with NxN coefficients generated from previous PCA.
-        Default = '../data/pca/coeff.npy'
+        Default = 'data/pca/coeff.npy'
 
     Returns
     ----------
