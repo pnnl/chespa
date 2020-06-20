@@ -151,7 +151,7 @@ def get_cxcalc_properties(data, struct_col_name='SMILES', inplace=False):
 if __name__ == '__main__':
 
     # Use library from paper as example
-    fname = r'SupportingData.xlsx'
+    fname = r'../data/SupportingData.xlsx'
     data = pd.read_excel(fname, sheet_name='SuspectLibrary',
                          usecols=['Formula', 'SMILES'])
     get_mass(data, inplace=True)

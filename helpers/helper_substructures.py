@@ -35,7 +35,7 @@ def get_substructures(df):
 if __name__ == '__main__':
 
     # Use library from paper as example
-    fname = r'SupportingData.xlsx'
+    fname = r'../data/SupportingData.xlsx'
     data = pd.read_excel(fname, sheet_name='SuspectLibrary',
                          usecols=['SMILES'])
     get_substructures(data)

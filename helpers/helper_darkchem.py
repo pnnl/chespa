@@ -71,7 +71,7 @@ def get_latent_space_vectors(df, smiles_col_name='SMILES'):
 if __name__ == '__main__':
 
     # Use library from paper as example
-    fname = r'SupportingData.xlsx'
+    fname = r'../data/SupportingData.xlsx'
     data = pd.read_excel(fname, sheet_name='SuspectLibrary',
                          usecols=['SMILES'])
     data = get_latent_space_vectors(data)
