@@ -30,8 +30,8 @@ NSTD = 1.95996 # nstd = X standard deviations, 1.95996 = 95% CI
 
 #%% Analysis functions
 
-def normalize(data, avgs_path='data/pca/avgs.npy',
-              stds_path='data/pca/stds.npy'):
+def normalize(data, avgs_path='avgs.npy',
+              stds_path='stds.npy'):
     '''
     Normalize data to have an average of 0 and standard deviation of 1,
     given averages and standard deviations from an existing space.
@@ -66,7 +66,7 @@ def normalize(data, avgs_path='data/pca/avgs.npy',
     return data
 
 
-def get_pca(data, coeff_path='data/pca/coeff.npy'):
+def get_pca(data, coeff_path='coeff.npy'):
     '''
     Get PCA transform using coefficients from existing space.
 
