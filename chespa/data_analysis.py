@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Scion: Streamlining evaluation and prediction of ionizability
+chespa: Streamlining chemical space evaluation of molecular sets and
+assessing trends of ionizability
 
 @author: Jamie Nunez
 (C) 2020 - Pacific Northwest National Laboratory

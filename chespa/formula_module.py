@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 '''
-InChI Automator Module
+chespa: Streamlining chemical space evaluation of molecular sets and
+assessing trends of ionizability
+
 @author: Jamie Nunez
-(C) 2016 - Pacific Northwest National Laboratory
+(C) 2020 - Pacific Northwest National Laboratory
 
 Module for evaluating chemical formulas
 '''
