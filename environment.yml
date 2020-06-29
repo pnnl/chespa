@@ -1,4 +1,4 @@
-name: scion-environment
+name: chespa-environment
 channels:
   - conda-forge
 dependencies:

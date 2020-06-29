@@ -1,12 +1,12 @@
-scion
+chespa
 =======
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pnnl/scion/master)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pnnl/chespa/master)
 
-Citing scion
+Citing chespa
 -------------
-If you would like to reference scion in an academic paper, we ask you include the following:
-* scion, version 0.1.0 http://github.com/pnnl/scion (accessed MMM YYYY)
+If you would like to reference chespa in an academic paper, we ask you include the following:
+* chespa, version 0.1.0 http://github.com/pnnl/chespa (accessed MMM YYYY)
 
 Disclaimer
 ----------

@@ -42,10 +42,10 @@ def normalize(data, avgs_path='avgs.npy',
         Matrix with data to normalize
     avg_path: string (optional)
         Path to .npy file with N average values to use
-        Default = 'data/pca/avgs.npy'
+        Default = 'avgs.npy'
     stds: Numpy array or list (N elements) (optional)
         Path to .npy file with N standard deviation values to use.
-        Default = 'data/pca/stds.npy'
+        Default = 'stds.npy'
 
     Returns
     ----------
@@ -76,7 +76,7 @@ def get_pca(data, coeff_path='coeff.npy'):
         Matrix with data to transform
     coeff_path: string (optional)
         Path to .npy file with NxN coefficients generated from previous PCA.
-        Default = 'data/pca/coeff.npy'
+        Default = 'coeff.npy'
 
     Returns
     ----------
