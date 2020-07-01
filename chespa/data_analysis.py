@@ -88,7 +88,7 @@ def get_pca(data, coeff_path='coeff.npy'):
     return np.dot(coeff.T, data.T).T
 
 
-def get_counts(df, col, uniq_labels=None):
+def get_counts(df, labels, col, uniq_labels=None):
     '''
     Returns the counts of elements in a Pandas DataFrame column. If any
     uniq_labels are not present, adds with a count of 0. If NaN elements
@@ -110,7 +110,15 @@ def get_counts(df, col, uniq_labels=None):
     res: Pandas Series
         Final count summary
     '''
-    res = df[col].value_counts()
+
+    # Remove duplicates then join with target
+    cols = ['CpdInd', col]
+    labels = labels.copy()[cols]
+    labels.drop_duplicates(subset=cols, inplace=True)
+    df_temp = df.merge(labels.set_index('CpdInd'), on='CpdInd')
+    
+    # Count
+    res = df_temp[col].value_counts()
     
     # Force all labels to be present (if any missing)
     if uniq_labels is not None:
@@ -118,13 +126,16 @@ def get_counts(df, col, uniq_labels=None):
             if label not in res.index:
                 res.set_value(label, 0)
     
+    # Remove nan labels, if they exist
     res = res.loc[res.index.dropna()]
+    
+    # Sort
     res = res.sort_index()
     
     return res
 
 
-def get_method_counts(df, col, uniq_labels=None):
+def get_method_counts(df, labels, col, uniq_labels=None):
     '''
     Returns count information for each method in the global variable
     METHOD_NAMES. Anywhere the given method is 0 is removed from the DataFrame
@@ -149,7 +160,7 @@ def get_method_counts(df, col, uniq_labels=None):
     results = []
     for method in METHOD_NAMES:
         df_temp = df[df[method] > 0]
-        results.append(get_counts(df_temp, col, uniq_labels=uniq_labels))
+        results.append(get_counts(df_temp, labels, col, uniq_labels=uniq_labels))
     return results
 
 
@@ -163,30 +174,36 @@ def get_cpd_labels(fname):
     '''
 
     # ClassyFire labels
-    cols = ['CpdInd', 'SuperClass ID']
+    cols = ['CpdInd', 'ClassyFire']
     data = pd.read_excel(fname,
                          sheet_name='ClassyFire', usecols=cols, header=0,
                          dtype={cols[1]: str})
-    data.rename(columns={'SuperClass ID':'ClassyFire Superclass'}, inplace=True)
 
     # ChemSpace labels
-    cols = ['CpdInd', 'ChemSpace Cluster']
+    cols = ['CpdInd', 'ChemSpace']
     data_temp = pd.read_excel(fname,
                               sheet_name='ChemSpace', usecols=cols, header=0,
                               dtype={cols[1]: str})
     data = data.join(data_temp.set_index('CpdInd'), on='CpdInd')
 
     # DarkChem labels
-    cols = ['CpdInd', 'DarkChem Cluster']
+    cols = ['CpdInd', 'DarkChem']
     data_temp = pd.read_excel(fname,
                               sheet_name='DarkChem', usecols=cols, header=0,
                               dtype={cols[1]: str})
     data = data.join(data_temp.set_index('CpdInd'), on='CpdInd')
     
-    # Substructure labels
-    cols = ['CpdInd', 'Substructure Cluster']
+    # MACCS Substructure labels
+    cols = ['CpdInd', 'MACCS']
     data_temp = pd.read_excel(fname,
-                              sheet_name='Substructures', usecols=cols, header=0,
+                              sheet_name='MACCS_Substructures', usecols=cols, header=0,
+                              dtype={cols[1]: str})
+    data = data.join(data_temp.set_index('CpdInd'), on='CpdInd')
+    
+        # MACCS Substructure labels
+    cols = ['CpdInd', 'SPECTRe']
+    data_temp = pd.read_excel(fname,
+                              sheet_name='SPECTRe_Substructures', usecols=cols, header=0,
                               dtype={cols[1]: str})
     data = data.join(data_temp.set_index('CpdInd'), on='CpdInd')
 
@@ -199,28 +216,22 @@ def get_spiked_results(fname):
     the Excel spreadsheet stored at fname. Group/cluster labels are added to
     the final DataFrame.
     '''
-    
-    labels = get_cpd_labels(fname)
 
     # Observed data
     cols = ['CpdInd', 'Mix']
     cols.extend(METHOD_NAMES)
-    data_temp = pd.read_excel(fname,
-                             sheet_name='Observed',
-                             usecols=cols, header=0)
-    data_obs = data_temp.join(labels.set_index('CpdInd'), on='CpdInd')
+    data_obs = pd.read_excel(fname, sheet_name='Observed', usecols=cols,
+                             header=0)
 
     # Not observed data
     cols = ['CpdInd', 'Mix']
-    data_temp = pd.read_excel(fname,
-                              sheet_name='NotObs', usecols=cols, header=0)
-    data_not_obs = data_temp.join(labels.set_index('CpdInd'), on='CpdInd')
+    data_not_obs = pd.read_excel(fname, sheet_name='NotObs', usecols=cols,
+                                 header=0)
     
     # Spiked in compounds
     cols = ['CpdInd', 'Mix']
-    data_temp = pd.read_excel(fname,
-                              sheet_name='SpikedIn', usecols=cols, header=0)
-    data_spiked = data_temp.join(labels.set_index('CpdInd'), on='CpdInd')
+    data_spiked = pd.read_excel(fname, sheet_name='SpikedIn', usecols=cols,
+                                header=0)
     
     return data_obs, data_not_obs, data_spiked
 
@@ -446,7 +457,7 @@ def plot_bars_percent_method(datasets, totals, ylabel, names, filename=None):
 
 def plot_bar_counts_multi(datasets, ylabel, titles, ymin=0, ymax=100, 
                           palette='viridis', fig_width=11, fig_height=11, 
-                          wspace=0.6, hspace=0.6, rows=4, cols=4, filename=None):
+                          wspace=0.6, hspace=0.75, rows=5, cols=4, filename=None):
     '''
     Plot histograms for each given dataset.
 
@@ -508,8 +519,8 @@ def plot_bar_counts_multi(datasets, ylabel, titles, ymin=0, ymax=100,
 
 
 def plot_bar_averages_multi(x, y_list, data, palette='viridis',
-                        fig_width=4, fig_height=8, wspace=0.4, hspace=0.4,
-                        rows=4, cols=4, filename=None):
+                        fig_width=5.5, fig_height=8, wspace=0.4, hspace=0.4,
+                        rows=5, cols=2, filename=None):
     '''
     Plot histogram for each element in data.
 

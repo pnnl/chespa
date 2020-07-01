@@ -10,7 +10,7 @@ Module for evaluating chemical formulas
 '''
 
 import re
-from molmass import Formula # Download Molmass.py and Elements.py from http://www.lfd.uci.edu/~gohlke
+from molmass import Formula
 
 def is_sponch(formula):
     '''
