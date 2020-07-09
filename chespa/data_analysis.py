@@ -179,33 +179,13 @@ def get_cpd_labels(fname):
                          sheet_name='ClassyFire', usecols=cols, header=0,
                          dtype={cols[1]: str})
 
-    # ChemSpace labels
-    cols = ['CpdInd', 'ChemSpace']
-    data_temp = pd.read_excel(fname,
-                              sheet_name='ChemSpace', usecols=cols, header=0,
-                              dtype={cols[1]: str})
-    data = data.join(data_temp.set_index('CpdInd'), on='CpdInd')
-
-    # DarkChem labels
-    cols = ['CpdInd', 'DarkChem']
-    data_temp = pd.read_excel(fname,
-                              sheet_name='DarkChem', usecols=cols, header=0,
-                              dtype={cols[1]: str})
-    data = data.join(data_temp.set_index('CpdInd'), on='CpdInd')
-    
-    # MACCS Substructure labels
-    cols = ['CpdInd', 'MACCS']
-    data_temp = pd.read_excel(fname,
-                              sheet_name='MACCS_Substructures', usecols=cols, header=0,
-                              dtype={cols[1]: str})
-    data = data.join(data_temp.set_index('CpdInd'), on='CpdInd')
-    
-        # MACCS Substructure labels
-    cols = ['CpdInd', 'SPECTRe']
-    data_temp = pd.read_excel(fname,
-                              sheet_name='SPECTRe_Substructures', usecols=cols, header=0,
-                              dtype={cols[1]: str})
-    data = data.join(data_temp.set_index('CpdInd'), on='CpdInd')
+    # Add all other Chemical Spaces
+    for chemspace in ['ChemSpace', 'DarkChem', 'MACCS', 'SPECTRe']:
+        cols = ['CpdInd', chemspace]
+        data_temp = pd.read_excel(fname,
+                                  sheet_name=chemspace, usecols=cols, header=0,
+                                  dtype={cols[1]: str})
+        data = data.join(data_temp.set_index('CpdInd'), on='CpdInd')
 
     return data
     
