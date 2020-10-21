@@ -6,7 +6,7 @@ chespa
 Citing chespa
 -------------
 If you would like to reference chespa in an academic paper, we ask you include the following:
-* chespa, version 0.1.0 http://github.com/pnnl/chespa (accessed MMM YYYY)
+* chespa, version 1.0.0 http://github.com/pnnl/chespa (accessed MMM YYYY)
 
 Disclaimer
 ----------
