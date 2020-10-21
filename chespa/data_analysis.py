@@ -53,15 +53,19 @@ def normalize(data, avgs_path='avgs.npy',
     data: Numpy array (MxN)
         Normalized data
     '''
+    
+    # Load values from Colby et al. 2020 (DOI: 10.1021/acs.analchem.9b02348)
     avgs = np.load(avgs_path)
     stds = np.load(stds_path)
     data = np.copy(data)
 
+    # Set average to 0 and standard deviation to 1
     for j in range(data.shape[1]):
         avg = avgs[j]
         std = stds[j]
         data[:, j] = (data[:, j] - avg) / std
 
+    # Replace nan values with zeros
     data[np.where(np.isnan(data))] = 0
         
     return data
@@ -84,7 +88,11 @@ def get_pca(data, coeff_path='coeff.npy'):
     data: Numpy array (MxN)
         Transformed data
     '''
+    
+    # Load values from Colby et al. 2020 (DOI: 10.1021/acs.analchem.9b02348)
     coeff = np.load(coeff_path)
+    
+    # Perform PCA and return
     return np.dot(coeff.T, data.T).T
 
 
@@ -157,10 +165,18 @@ def get_method_counts(df, labels, col, uniq_labels=None):
     res: Pandas Series
         Final count summary
     '''
+    
+    # Init
     results = []
+    
     for method in METHOD_NAMES:
+        
+        # Find rows with this method
         df_temp = df[df[method] > 0]
+        
+        # Calculate counts
         results.append(get_counts(df_temp, labels, col, uniq_labels=uniq_labels))
+    
     return results
 
 
@@ -326,6 +342,7 @@ def plot_vars(data, labels, klabels, filename=None):
         Path to save figure at. If None, figure is not saved. Default = None.
     '''
 
+    # Plot settings
     cols = 2
     if data.shape[1] < 4:
         cols = 1
@@ -337,6 +354,7 @@ def plot_vars(data, labels, klabels, filename=None):
     plt.figure(figsize=(4 * cols, 4 * rows))
     plt.subplots_adjust(wspace=0.125, hspace=0.125)
 
+    # Iterate through each 2 dimensions
     for j in range(int(np.floor(data.shape[1] / 2))): # If odd num, it'll skip the last one
         num = 2 * j
         plt.subplot(rows * 100 + 20 + j + 1) 
@@ -355,6 +373,7 @@ def plot_vars(data, labels, klabels, filename=None):
 
         plt.axis('off')
 
+    # Save if filename given
     if filename is not None:
         plt.savefig(filename, dpi=600, bbox_inches='tight', pad_inches=0)
     plt.show()
@@ -399,7 +418,8 @@ def plot_bar_percent(data, ylabel, title=None, palette='viridis',
     plt.ylabel(ylabel)
     if title is not None:
         plt.title(title)
-                
+
+    # Save if filename given
     if filename is not None:
         plt.savefig(filename, bbox_inches='tight', dpi=600)
         plt.show()
@@ -428,12 +448,12 @@ def plot_bars_percent_method(datasets, totals, ylabel, names, filename=None):
         for i in range(len(METHOD_NAMES)):
             mname = METHOD_NAMES[i]
             plot_bar_percent(l[i] / t * 100, ylabel, title=mname)
-            
+
+            # Save if filename given
             if filename is not None:
                 plt.savefig(filename % (name, mname),
                             bbox_inches='tight', dpi=600)
                 plt.show()
-
 
 def plot_bar_counts_multi(datasets, ylabel, titles, ymin=0, ymax=100, 
                           palette='viridis', fig_width=11, fig_height=11, 
@@ -491,7 +511,8 @@ def plot_bar_counts_multi(datasets, ylabel, titles, ymin=0, ymax=100,
         if title is not None:
             plt.title(title)
         subplot += 1
-        
+    
+    # Save if filename given
     if filename is not None:
         plt.savefig(filename, bbox_inches='tight', dpi=600)
         plt.show()
@@ -547,6 +568,7 @@ def plot_bar_averages_multi(x, y_list, data, palette='viridis',
         plt.xlabel(None)
         subplot += 1
 
+    # Save if filename given
     if filename is not None:
         plt.savefig(filename, bbox_inches='tight', dpi=600)
         plt.show()
@@ -583,6 +605,7 @@ def draw_cpds(data, label, n=5, filename=None):
         
         subplot += (n - this_n)  # Move to next row
 
+    # Save if filename given
     if filename is not None:
         plt.savefig(filename, bbox_inches='tight', dpi=600)
         plt.show()
