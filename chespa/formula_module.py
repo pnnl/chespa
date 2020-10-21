@@ -51,11 +51,18 @@ def match(cs_object, formula, name):
         Note: if the ChemSpider compound doesn't have the same common name (the main name listed
         at the top of the entry page), the name check will fail and this function will return False.
     '''
+    
+    # Remove unnecessary characters
     cs_formula = cs_object.molecular_formula.replace('{','').replace('}','').replace('_','')
-    if type(formula) == dict: # cs_formula type must match the formula type given
+    
+    # cs_formula type must match the formula type given
+    if type(formula) == dict:
         cs_formula = formula_split(cs_formula)
+    
+    # Check name and formula
     formula_match = check_formula(cs_formula, formula)
     name_match = check_name(cs_object.common_name, name)
+    
     return formula_match and name_match
 
 def check_name(name1, name2):
@@ -64,14 +71,20 @@ def check_name(name1, name2):
     names like 'acetic acid' and 'acetate'. Not case sensitive. Returns True if they are
     equivalent and False otherwise.
     '''
+    
+    # Init
     name1 = name1.lower()
     name2 = name2.lower()
     name1b = name1
     name2b = name2
+    
+    # Account for differences in acid names
     if name1.endswith('ate'):
         name1b = name1[:-3] + 'ic acid'
     if name2.endswith('ate'):
         name2b = name2[:-3] + 'ic acid'
+        
+    # Return if this is a match or not
     if name1 == name2 or name1b == name2 or name1 == name2b:
         return True
     else:
@@ -83,11 +96,15 @@ def check_formula(formula1, formula2):
     Considers H and D to be the same element and ignores charges. Returns True if they match and
     False otherwise.
     '''
+    
+    # Create strings for both formulas if their types don't match
     if type(formula1) != type(formula2):
             formula1 = formula_to_string(formula1)
             formula2 = formula_to_string(formula2)
+    
+    # Remove unnecessary characters
     if type(formula1) == dict:
-        form1 = formula_split(formula_to_string(formula1).replace('D', 'H')) # To count D's as H's
+        form1 = formula_split(formula_to_string(formula1).replace('D', 'H'))
         form2 = formula_split(formula_to_string(formula2).replace('D', 'H'))
     else:
         if '+' in formula1:
@@ -98,7 +115,7 @@ def check_formula(formula1, formula2):
             formula2 = formula2[:formula2.index('+')]
         if '-' in formula2:
             formula2 = formula2[:formula2.index('-')]
-        form1 = formula_split(formula1.replace('D', 'H')) # To count D's as H's
+        form1 = formula_split(formula1.replace('D', 'H'))
         form2 = formula_split(formula2.replace('D', 'H'))
     return cmp(form1, form2) == 0
         
@@ -110,7 +127,10 @@ def check_mass(mass1, mass2, max_percent_error):
     otherwise.
     '''
     if max_percent_error > 1:
+        # Assume given out of 100% and correct
         max_percent_error = max_percent_error / 100.0
+        
+    # Check if the two values are within range
     if mass2 * (1 + max_percent_error) > mass1 and mass2 * (1 - max_percent_error) < mass1:
         return True
     else:
@@ -153,6 +173,8 @@ def process_parenthesis(formula):
     If a formula contains parentheses, removes them. Example: C(CH3)3 as an input would return
     CCH3CH3CH3. More than one layer of parentheses causes an error.
     '''
+    
+    # Find possible parentheses characters
     findparen = ''.join([i for i in formula if not i.isdigit()])
     findparen = ''.join([i for i in findparen if not i.isalpha()])
     if findparen.find('((') != -1:
@@ -169,7 +191,9 @@ def process_parenthesis(formula):
         for i in range(0, len(new_formula)-1):  
             piece = str(new_formula[i+1])
             check = piece[:2]
-            if check.isdigit(): # In case there is a two digit subscript after the parenthesis
+            
+            # In case there is a two digit subscript after the parenthesis
+            if check.isdigit():
                 new = new_formula[i]*(int(check))
                 new_formula[i] = new
                 new_formula = new_formula[:i+1] + [piece[1:]] + new_formula[i+2:]
